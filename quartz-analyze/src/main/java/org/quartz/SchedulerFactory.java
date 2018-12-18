@@ -28,6 +28,10 @@ import java.util.Collection;
  * @see org.quartz.impl.StdSchedulerFactory
  * 
  * @author James House
+ *
+ *  StdSchedulerFacotory通过配置文件来设置Scheduler的各项参数
+ *  DirectSchedulerFactory主要通过硬编码来设置Scheduler的各项参数。
+ *
  */
 public interface SchedulerFactory {
 

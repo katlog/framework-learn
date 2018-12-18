@@ -27,7 +27,8 @@ import java.util.StringTokenizer;
  * <p>
  * This is an utility calss used to parse the properties.
  * </p>
- * 
+ *  解析 配置文件的工具类【有点像 装饰器（？）】
+ *      主要是将properties文件中的value转成java中的各种类型Int String Long等
  * @author James House
  */
 public class PropertiesParser {

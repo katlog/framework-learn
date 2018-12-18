@@ -368,6 +368,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
      * method if your application security policy prohibits access to
      * <code>{@link System#getProperties()}</code>.
      * </p>
+     *  初始化配置文件：默认找 org/quartz/quartz.properties
      */
     public void initialize() throws SchedulerException {
         // short-circuit if already initialized
@@ -378,6 +379,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
             throw initException;
         }
 
+        // 自定义配置文件名
         String requestedFile = System.getProperty(PROPERTIES_FILE);
         String propFileName = requestedFile != null ? requestedFile
                 : "quartz.properties";
@@ -426,6 +428,8 @@ public class StdSchedulerFactory implements SchedulerFactory {
                 }
 
             } else {
+                // 3. 取quartz.jar内的默认配置文件
+
                 propSrc = "default resource file in Quartz package: 'quartz.properties'";
 
                 ClassLoader cl = getClass().getClassLoader();
@@ -471,6 +475,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
     /**
      * Add all System properties to the given <code>props</code>.  Will override
      * any properties that already exist in the given <code>props</code>.
+     * 系统属性 优先级高。
      */
     private Properties overrideWithSysProps(Properties props) {
         Properties sysProps = null;
@@ -590,6 +595,10 @@ public class StdSchedulerFactory implements SchedulerFactory {
         this.cfg = new PropertiesParser(props);
     }
 
+    /** 实例化 scheduler的具体过程
+     * @see <a href="scheduler_init.png">scheduler_init</a>
+     * @see <a href="D:\studyCode\framework-learn\quartz-analyze\src\main\java\org\quartz\impl\scheduler_init.png">scheduler_init</a>
+     * */
     private Scheduler instantiate() throws SchedulerException {
         if (cfg == null) {
             initialize();
@@ -617,7 +626,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
 
         SchedulerRepository schedRep = SchedulerRepository.getInstance();
 
-        // Get Scheduler Properties
+        // Get Scheduler Properties 获取schedule一系列参数
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         String schedName = cfg.getStringProperty(PROP_SCHED_INSTANCE_NAME,
@@ -647,6 +656,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
             userTXLocation = null;
         }
 
+        // 不知道这个用来干啥的
         classLoadHelperClass = cfg.getStringProperty(
                 PROP_SCHED_CLASS_LOAD_HELPER_CLASS,
                 "org.quartz.simpl.CascadingClassLoadHelper");
@@ -702,7 +712,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
         
         Properties schedCtxtProps = cfg.getPropertyGroup(PROP_SCHED_CONTEXT_PREFIX, true);
 
-        // If Proxying to remote scheduler, short-circuit here...
+        // If Proxying to remote scheduler, short-circuit（短路） here...
         // ~~~~~~~~~~~~~~~~~~
         if (rmiProxy) {
 
@@ -1367,6 +1377,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
     }
 
 
+    /** 用props给obj设置属性 */
     private void setBeanProps(Object obj, Properties props)
         throws NoSuchMethodException, IllegalAccessException,
             java.lang.reflect.InvocationTargetException,
@@ -1459,7 +1470,7 @@ public class StdSchedulerFactory implements SchedulerFactory {
     }
 
     private ClassLoader findClassloader() {
-        // work-around set context loader for windows-service started jvms (QUARTZ-748)
+        // work-around（变通） set context loader for windows-service started jvms (QUARTZ-748)
         if(Thread.currentThread().getContextClassLoader() == null && getClass().getClassLoader() != null) {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         }

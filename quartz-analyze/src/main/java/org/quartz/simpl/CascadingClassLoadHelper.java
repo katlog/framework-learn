@@ -47,6 +47,8 @@ import org.quartz.spi.ClassLoadHelper;
  * 
  * @author jhouse
  * @author pl47ypus
+ *
+ * cascade 级联
  */
 public class CascadingClassLoadHelper implements ClassLoadHelper {
 
