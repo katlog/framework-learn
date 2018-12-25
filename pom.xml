@@ -12,6 +12,7 @@
     <modules>
         <module>quartz-analyze</module>
         <module>refelctions-analyze</module>
+        <module>netty-analyze</module>
     </modules>
 
 

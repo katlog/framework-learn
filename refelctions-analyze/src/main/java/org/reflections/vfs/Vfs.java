@@ -178,6 +178,7 @@ public abstract class Vfs {
         }
 
         try {
+            // 类型还挺多的
             path = url.toExternalForm();
             if (path.startsWith("jar:")) path = path.substring("jar:".length());
             if (path.startsWith("wsjar:")) path = path.substring("wsjar:".length());
@@ -209,22 +210,30 @@ public abstract class Vfs {
      * <p>bundle - for bundle protocol, using eclipse FileLocator (should be provided in classpath)
      * <p>jarInputStream - creates a {@link JarInputDir} over jar files, using Java's JarInputStream
      * */
+    // 【感觉这个还挺有用的】
     public static enum DefaultUrlTypes implements UrlType {
+
+        /** jar 文件 */
         jarFile {
+            @Override
             public boolean matches(URL url) {
                 return url.getProtocol().equals("file") && hasJarFileInPath(url);
             }
 
+            @Override
             public Dir createDir(final URL url) throws Exception {
                 return new ZipDir(new JarFile(getFile(url)));
             }
         },
 
+        /** jar url 没注意到这个url协议*/
         jarUrl {
+            @Override
             public boolean matches(URL url) {
                 return "jar".equals(url.getProtocol()) || "zip".equals(url.getProtocol()) || "wsjar".equals(url.getProtocol());
             }
 
+            @Override
             public Dir createDir(URL url) throws Exception {
                 try {
                     URLConnection urlConnection = url.openConnection();
@@ -241,7 +250,9 @@ public abstract class Vfs {
             }
         },
 
+        /** 目录 */
         directory {
+            @Override
             public boolean matches(URL url) {
                 if (url.getProtocol().equals("file") && !hasJarFileInPath(url)) {
                     java.io.File file = getFile(url);
@@ -249,16 +260,20 @@ public abstract class Vfs {
                 } else return false;
             }
 
+            @Override
             public Dir createDir(final URL url) throws Exception {
                 return new SystemDir(getFile(url));
             }
         },
 
+        /** 这是啥？ */
         jboss_vfs {
+            @Override
             public boolean matches(URL url) {
                 return url.getProtocol().equals("vfs");
             }
 
+            @Override
             public Dir createDir(URL url) throws Exception {
                 Object content = url.openConnection().getContent();
                 Class<?> virtualFile = ClasspathHelper.contextClassLoader().loadClass("org.jboss.vfs.VirtualFile");
@@ -270,21 +285,27 @@ public abstract class Vfs {
             }
         },
 
+        /** 这又是啥？ */
         jboss_vfsfile {
+            @Override
             public boolean matches(URL url) throws Exception {
                 return "vfszip".equals(url.getProtocol()) || "vfsfile".equals(url.getProtocol());
             }
 
+            @Override
             public Dir createDir(URL url) throws Exception {
                 return new UrlTypeVFS().createDir(url);
             }
         },
 
+        /** java中的 bundle模块？ */
         bundle {
+            @Override
             public boolean matches(URL url) throws Exception {
                 return url.getProtocol().startsWith("bundle");
             }
 
+            @Override
             public Dir createDir(URL url) throws Exception {
                 return fromURL((URL) ClasspathHelper.contextClassLoader().
                         loadClass("org.eclipse.core.runtime.FileLocator").getMethod("resolve", URL.class).invoke(null, url));
@@ -292,10 +313,12 @@ public abstract class Vfs {
         },
 
         jarInputStream {
+            @Override
             public boolean matches(URL url) throws Exception {
                 return url.toExternalForm().contains(".jar");
             }
 
+            @Override
             public Dir createDir(final URL url) throws Exception {
                 return new JarInputDir(url);
             }

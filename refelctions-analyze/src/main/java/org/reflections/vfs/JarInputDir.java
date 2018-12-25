@@ -46,7 +46,10 @@ public class JarInputDir implements Vfs.Dir {
                                 }
 
                                 long size = entry.getSize();
-                                if (size < 0) size = 0xffffffffl + size; //JDK-6916399
+                                if (size < 0) {
+                                    //JDK-6916399  没太懂什么意思 - -
+                                    size = 0xffffffffl + size;
+                                }
                                 nextCursor += size;
                                 if (!entry.isDirectory()) {
                                     return new JarInputFile(entry, JarInputDir.this, cursor, nextCursor);

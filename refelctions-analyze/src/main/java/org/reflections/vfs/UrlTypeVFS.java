@@ -29,10 +29,12 @@ public class UrlTypeVFS implements UrlType {
     final String VFSZIP = "vfszip";
     final String VFSFILE = "vfsfile";
 
+    @Override
     public boolean matches(URL url) {
         return VFSZIP.equals(url.getProtocol()) || VFSFILE.equals(url.getProtocol());
     }
 
+    @Override
     public Dir createDir(final URL url) {
         try {
             URL adaptedUrl = adaptURL(url);
