@@ -14,6 +14,7 @@
         <module>refelctions-analyze</module>
         <module>netty-analyze</module>
         <module>asm-analyze</module>
+        <module>tomcat-how-works</module>
     </modules>
 
 
