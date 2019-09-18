@@ -525,6 +525,7 @@ public class SimpleThreadPool implements ThreadPool {
             run.set(false);
         }
 
+        // 相当于 supllier
         public void run(Runnable newRunnable) {
             synchronized(this) {
                 if(runnable != null) {
@@ -541,12 +542,14 @@ public class SimpleThreadPool implements ThreadPool {
          * Loop, executing targets as they are received.
          * </p>
          */
+        // 相当于 consumer
         @Override
         public void run() {
             boolean ran = false;
             
             while (run.get()) {
                 try {
+                    // 不同步它自己会有问题？【一次只能由一个WorkerThread运行一个runnable？】
                     synchronized(this) {
                         while (runnable == null && run.get()) {
                             this.wait(500);
@@ -572,6 +575,7 @@ public class SimpleThreadPool implements ThreadPool {
                         // ignore to help with a tomcat glitch
                     }
                 } finally {
+                    // 为啥synchronized？
                     synchronized(this) {
                     	runnable = null;
                     }
