@@ -17,8 +17,8 @@ import java.nio.charset.Charset;
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
 public class NettyOioServer {
-    public void server(int port)
-            throws Exception {
+
+    public void server(int port) throws Exception {
         final ByteBuf buf =
                 Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hi!\r\n", Charset.forName("UTF-8")));
         EventLoopGroup group = new OioEventLoopGroup();

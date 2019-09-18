@@ -17,6 +17,9 @@ import java.util.Set;
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
 public class PlainNioServer {
+    public static void main(String[] args) throws IOException {
+        new PlainNioServer().serve(28000);
+    }
     public void serve(int port) throws IOException {
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
         serverChannel.configureBlocking(false);
@@ -32,7 +35,8 @@ public class PlainNioServer {
         for (;;){
             try {
                 //等待需要处理的新事件；阻塞将一直持续到下一个传入事件
-                selector.select();
+                int num = selector.select();
+                System.out.println("num = " + num);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 //handle exception
