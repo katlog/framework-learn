@@ -3,7 +3,8 @@ package rabbit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class ConfigConstants {
@@ -12,9 +13,15 @@ public class ConfigConstants {
     static {
         properties = new Properties();
         try {
-            File config = new File("config/mongodb-config.properties");
+            Path rootPath = Paths.get(System.getProperty("user.dir"));
+            File config;
+            // 兼容junit
+            if (rootPath.endsWith("rabbitmq-learn")) {
+                config = rootPath.getParent().resolve("config/mongodb-config.properties").toFile();
+            } else {
+                config = new File("config/mongodb-config.properties");
+            }
             properties.load(new FileInputStream(config));
-            // properties.load(ConfigConstants.class.getResourceAsStream("/config/mongodb-config.properties"));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

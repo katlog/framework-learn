@@ -3,6 +3,7 @@ package rabbit._03clientwizard;
 import com.rabbitmq.client.*;
 import org.junit.Test;
 import rabbit.BaseRabbit;
+import rabbit.Meta;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -128,6 +129,53 @@ public class RabbitMqConsumer extends BaseRabbit {
         System.out.println(new String(response.getBody()));
 
         return response;
+    }
+
+    /**  消费中Consumer的处理过程 */
+    @Test
+    public void consume_consumer_process() throws IOException, InterruptedException {
+        Meta meta = quickDeclareExchangeQueue("consume_consumer_process");
+        publishDurable(meta, "consume_consumer_process message 1...");
+
+
+        defaultChannel.basicConsume(meta.getQueue(), new Consumer() {
+            @Override
+            public void handleConsumeOk(String consumerTag) {
+                // 会在其他方法之前调用，返回消费者标签
+                System.out.println("handleConsumeOk consumerTag = " + consumerTag);
+            }
+
+            @Override
+            public void handleCancelOk(String consumerTag) {
+                // 显式地或者隐式地取消订阅时调用(通过channel.basicCancel方法来显式地取消一个消费者的订阅)
+                System.out.println("handleCancelOk consumerTag = " + consumerTag);
+            }
+
+            @Override
+            public void handleCancel(String consumerTag) throws IOException {
+                // 显式地或者隐式地取消订阅时调用(通过channel.basicCancel方法来显式地取消一个消费者的订阅)
+                System.out.println("handleCancel consumerTag = " + consumerTag);
+            }
+
+            @Override
+            public void handleShutdownSignal(String consumerTag, ShutdownSignalException sig) {
+                // 当Channel或者Connection关闭的时候会调用
+                System.out.println("handleShutdownSignal consumerTag = " + consumerTag);
+            }
+
+            @Override
+            public void handleRecoverOk(String consumerTag) {
+                System.out.println("handleRecoverOk consumerTag = " + consumerTag);
+            }
+
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                System.out.println("handleDelivery consumerTag = " + consumerTag);
+                defaultChannel.basicCancel(consumerTag);
+            }
+        });
+
+        Thread.sleep(60000);
     }
 
 }
