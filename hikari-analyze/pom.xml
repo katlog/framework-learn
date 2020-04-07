@@ -12,12 +12,19 @@
     <artifactId>hikari-analyze</artifactId>
 
 
+    <repositories>
+        <repository>
+            <id>clojars</id>
+            <url>https://clojars.org/repo/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/hikari-cp/hikari-cp -->
         <dependency>
             <groupId>hikari-cp</groupId>
             <artifactId>hikari-cp</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->

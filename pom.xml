@@ -16,7 +16,23 @@
         <module>asm-analyze</module>
         <module>tomcat-how-works</module>
         <module>hikari-analyze</module>
+        <module>redis-learn</module>
+        <module>mongodb-learn</module>
+        <module>rabbitmq-learn</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <version>4.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+        </dependency>
+    </dependencies>
 
 
     <build>
