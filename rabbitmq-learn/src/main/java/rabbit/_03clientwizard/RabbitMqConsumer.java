@@ -169,6 +169,7 @@ public class RabbitMqConsumer extends BaseRabbit {
         publishDurable(meta, "consume_consumer_process message 1...");
 
 
+
         defaultChannel.basicConsume(meta.getQueue(), new Consumer() {
             @Override
             public void handleConsumeOk(String consumerTag) {
