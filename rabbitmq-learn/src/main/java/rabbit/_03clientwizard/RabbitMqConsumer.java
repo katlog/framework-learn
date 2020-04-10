@@ -6,6 +6,7 @@ import rabbit.BaseRabbit;
 import rabbit.Meta;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class RabbitMqConsumer extends BaseRabbit {
@@ -110,6 +111,7 @@ public class RabbitMqConsumer extends BaseRabbit {
         publishDurable(exchange, routingKey, "get mode consume message2");
         publishDurable(exchange, routingKey, "get mode consume message3");
 
+        // 每个ack都单独确认了一次
         GetResponse response = consumeMessageByGetMode(queue);
         defaultChannel.basicAck(response.getEnvelope().getDeliveryTag(), false);
 
@@ -118,6 +120,35 @@ public class RabbitMqConsumer extends BaseRabbit {
 
         response = consumeMessageByGetMode(queue);
         defaultChannel.basicAck(response.getEnvelope().getDeliveryTag(), false);
+
+    }
+
+    /**  拉模式 */
+    @Test
+    public void consume_batchgGet() throws IOException {
+
+        String exchange = "exchange_batchGetMode_demo";
+        defaultChannel.exchangeDeclare(exchange, BuiltinExchangeType.FANOUT, false, true, null);
+
+        String queue = "batchGetMode_consume_queue";
+        defaultChannel.queueDeclare(queue, false, false, true, null);
+
+        String routingKey = "routing_batchGetMode_key";
+        defaultChannel.queueBind(queue, exchange, routingKey, null);
+
+        publishDurable(exchange, routingKey, "get mode consume message1");
+        publishDurable(exchange, routingKey, "get mode consume message2");
+        publishDurable(exchange, routingKey, "get mode consume message3");
+
+        GetResponse response = consumeMessageByGetMode(queue);
+        System.out.println("response.getEnvelope().getDeliveryTag() = " + response.getEnvelope().getDeliveryTag());
+        GetResponse response1 = consumeMessageByGetMode(queue);
+        System.out.println("response1.getEnvelope().getDeliveryTag() = " + response1.getEnvelope().getDeliveryTag());
+        GetResponse response2 = consumeMessageByGetMode(queue);
+        System.out.println("response2.getEnvelope().getDeliveryTag() = " + response2.getEnvelope().getDeliveryTag());
+
+        // 需要用最后一个deliveryTag才行，使用response只会ack确认1个，使用response1只会ack确认2个
+        defaultChannel.basicAck(response1.getEnvelope().getDeliveryTag(), true);
 
     }
 
