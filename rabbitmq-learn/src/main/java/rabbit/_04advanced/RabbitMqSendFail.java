@@ -44,7 +44,7 @@ public class RabbitMqSendFail extends BaseRabbit {
             }
         });
 
-        Thread.sleep(600000);
+        Thread.sleep(6000);
     }
 
     @Test
@@ -77,9 +77,12 @@ public class RabbitMqSendFail extends BaseRabbit {
         defaultChannel.queueDeclare("unroutedQueue", true, false, false, null);
         defaultChannel.queueBind("unroutedQueue", "myAe", "");
 
+        // 发送：正常路由
+        System.out.println("send normally .... " );
         publishDurable("normalExchange","normalKey","alternate exchange normally arrived..");
 
-        // 是的mandatory无效
+        // 发送：异常路由 （备份交换器 使mandatory无效）
+        System.out.println("send unusually .... " );
         defaultChannel.basicPublish("normalExchange","normalWrongKey",true
                 ,MessageProperties.PERSISTENT_TEXT_PLAIN,"alternate exchange unusually arrived..".getBytes());
 

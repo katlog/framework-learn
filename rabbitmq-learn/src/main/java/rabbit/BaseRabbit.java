@@ -1,6 +1,16 @@
 package rabbit;
 
 import com.rabbitmq.client.*;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HttpContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,6 +23,7 @@ public class BaseRabbit {
     protected static final ConnectionFactory FACTORY = new ConnectionFactory();
     protected Connection defaultConnection;
     protected Channel defaultChannel;
+    protected static HttpClient client;
 
     @BeforeClass
     public static void  beforeClass(){
@@ -28,6 +39,8 @@ public class BaseRabbit {
         factory.setHost(ConfigConstants.IP_ADDRESS);
         factory.setPort(ConfigConstants.PORT);
         System.out.println("factory init end----------------" );
+
+        client =  HttpClientBuilder.create().build();
     }
 
 
@@ -81,4 +94,6 @@ public class BaseRabbit {
 
         return new Meta(exchange, queue, routingKey);
     }
+
+
 }

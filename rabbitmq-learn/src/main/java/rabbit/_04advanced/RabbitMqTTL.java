@@ -1,6 +1,8 @@
 package rabbit._04advanced;
 
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.BuiltinExchangeType;
+import com.rabbitmq.client.MessageProperties;
 import org.junit.Test;
 import rabbit.BaseRabbit;
 import rabbit.Meta;
@@ -12,22 +14,26 @@ import java.util.Map;
 /**  TTL */
 public class RabbitMqTTL extends BaseRabbit {
 
-    /**  在队列上设置ttl */
+    /**  在队列上设置ttl：消息过期后会立马从队列中删去 */
     @Test
     public void publish_queueTTL() throws IOException {
 
-        String queueName = "publish_queueTTL_queue";
-        boolean durable = true;
-        boolean exclusive = false;
-        boolean autoDelete = false;
+        String queue = "publish_queueTTL_queue";
+        String exchange = "publish_queueTTL_exchange";
+        String routingKey = "routingKey";
 
+        defaultChannel.exchangeDeclare(exchange, BuiltinExchangeType.DIRECT, true, false, null);
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("x-message-ttl",6000);
-        defaultChannel.queueDeclare(queueName, durable, exclusive, autoDelete, args);
+        defaultChannel.queueDeclare(queue, true, false, false, args);
+        defaultChannel.queueBind(queue, exchange, routingKey);
+
+        defaultChannel.basicPublish(exchange, routingKey
+                , MessageProperties.PERSISTENT_TEXT_PLAIN, "publish ttl message by queue ttl ...".getBytes());
 
     }
 
-    /**  在消息属性上设置 */
+    /**  在消息属性上设置：感觉和上面的差不多诶，也是过了6秒就不见了 */
     @Test
     public void publish_amqpTTL() throws IOException, InterruptedException {
 
@@ -39,10 +45,21 @@ public class RabbitMqTTL extends BaseRabbit {
         //持久化消息
         builder.deliveryMode(2);
         //设置TTL=60000ms
-        builder.expiration("60000");
+        builder.expiration("6000");
         AMQP.BasicProperties properties = builder.build();
         defaultChannel.basicPublish(exchangeName, routingKey, true, properties, "publish_amqpTTL message".getBytes());
 
-        Thread.sleep(60000);
+        Thread.sleep(6000);
+    }
+
+    @Test
+    public void publish_queueDeclareTtl() throws IOException, InterruptedException {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("x-expires", 10000);
+        System.out.println("declare a expire queue  ");
+        defaultChannel.queueDeclare("my_expire_queue", true, false, false, args);
+
+        Thread.sleep(10000L);
+        System.out.println("args = ");
     }
 }
