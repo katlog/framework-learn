@@ -19,6 +19,7 @@
         <module>redis-learn</module>
         <module>mongodb-learn</module>
         <module>rabbitmq-learn</module>
+        <module>kafka-definitive-guide</module>
     </modules>
 
     <dependencies>
