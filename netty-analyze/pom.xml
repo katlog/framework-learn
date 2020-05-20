@@ -14,22 +14,10 @@
 
 
     <modules>
-        <module>chapter1</module>
-        <module>chapter2</module>
-        <module>chapter4</module>
-        <module>chapter5</module>
-        <module>chapter6</module>
-        <module>chapter7</module>
-        <module>chapter8</module>
-        <module>chapter9</module>
-        <module>chapter10</module>
-        <module>chapter11</module>
-        <module>chapter12</module>
-        <module>chapter13</module>
         <module>utils</module>
-        <module>chapter7</module>
+        <module>chapter2</module>
         <module>chapter12</module>
-        <module>chapter12</module>
+        <module>netty-advanced</module>
     </modules>
     <properties>
         <junit.version>4.12</junit.version>
@@ -44,11 +32,11 @@
                 <artifactId>netty-all</artifactId>
                 <version>${netty.version}</version>
             </dependency>
-            <dependency>
+           <!-- <dependency>
                 <groupId>name.fw.java</groupId>
                 <artifactId>utils</artifactId>
                 <version>2.0-SNAPSHOT</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -61,10 +49,17 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
         <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.10.0</version>
+        </dependency>
+
+        <!--<dependency>
             <groupId>name.fw.java</groupId>
             <artifactId>utils</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

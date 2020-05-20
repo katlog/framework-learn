@@ -7,6 +7,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
+import org.junit.Test;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -20,10 +21,12 @@ import java.util.concurrent.Executors;
  */
 public class ChannelOperationExamples {
     private static final Channel CHANNEL_FROM_SOMEWHERE = new NioSocketChannel();
+
+    @Test
     /**
      * 代码清单 4-5 写出到 Channel
      */
-    public static void writingToChannel() {
+    public void writingToChannel() {
         Channel channel = CHANNEL_FROM_SOMEWHERE; // Get the channel reference from somewhere
         //创建持有要写数据的 ByteBuf
         ByteBuf buf = Unpooled.copiedBuffer("your data", CharsetUtil.UTF_8);
