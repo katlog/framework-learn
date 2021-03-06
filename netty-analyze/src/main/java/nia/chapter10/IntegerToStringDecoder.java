@@ -11,8 +11,7 @@ import java.util.List;
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
 //扩展了MessageToMessageDecoder<Integer>
-public class IntegerToStringDecoder extends
-    MessageToMessageDecoder<Integer> {
+public class IntegerToStringDecoder extends MessageToMessageDecoder<Integer> {
     @Override
     public void decode(ChannelHandlerContext ctx, Integer msg,
         List<Object> out) throws Exception {

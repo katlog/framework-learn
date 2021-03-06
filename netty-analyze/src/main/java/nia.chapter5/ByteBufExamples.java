@@ -186,7 +186,7 @@ public class ByteBufExamples {
      */
     public static void byteBufProcessor() {
         ByteBuf buffer = BYTE_BUF_FROM_SOMEWHERE; //get reference form somewhere
-        int index = buffer.forEachByte(ByteBufProcessor.FIND_CR);
+        int index = buffer.forEachByte(ByteProcessor.FIND_CR);
     }
 
     /**

@@ -40,8 +40,7 @@ public class HttpClient {
         
     }
 	
-	private HttpResponse blockSend(FullHttpRequest request) throws InterruptedException, ExecutionException
-	{
+	private HttpResponse blockSend(FullHttpRequest request) throws InterruptedException, ExecutionException{
           request.headers().set(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
           DefaultPromise<HttpResponse> respPromise = new DefaultPromise<HttpResponse>(channel.eventLoop());
           handler.setRespPromise(respPromise);

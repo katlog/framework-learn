@@ -9,8 +9,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
 //扩展 SimpleChannelInboundHandler 以处理 LogEvent 消息
-public class LogEventHandler
-    extends SimpleChannelInboundHandler<LogEvent> {
+public class LogEventHandler extends SimpleChannelInboundHandler<LogEvent> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx,

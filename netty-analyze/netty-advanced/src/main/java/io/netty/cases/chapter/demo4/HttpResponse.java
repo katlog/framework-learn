@@ -17,43 +17,35 @@ public class HttpResponse {
 	
 	private byte [] body;
 	
-	public HttpResponse(FullHttpResponse response)
-	{
+	public HttpResponse(FullHttpResponse response)	{
 		this.header = response.headers();
 		this.response = response;
-		if (response.content() != null)
-		{
+		if (response.content() != null)	{
 			body = new byte[response.content().readableBytes()];
 			response.content().getBytes(0, body);
 		}
 	}
 
-//	public HttpResponse(FullHttpResponse response)
-//	{
-//		this.header = response.headers();
-//		this.response = response;
-//	}
+	// public HttpResponse(FullHttpResponse response){
+	// 	this.header = response.headers();
+	// 	this.response = response;
+	// }
 	
-	public HttpHeaders header()
-	{
+	// public byte [] body()	{
+	// 	return body = response.content() != null ?
+	// 			response.content().array() : null;
+	// }
+
+	public HttpHeaders header(){
 		return header;
 	}
+	// public byte [] body(){
+	// 	body = new byte[response.content().readableBytes()];
+	// 	response.content().getBytes(0, body);
+	// 	return body;
+	// }
 
-//	public byte [] body()
-//	{
-//		return body = response.content() != null ?
-//				response.content().array() : null;
-//	}
-
-//	public byte [] body()
-//	{
-//		body = new byte[response.content().readableBytes()];
-//		response.content().getBytes(0, body);
-//		return body;
-//	}
-
-	public byte [] body()
-	{
+	public byte [] body(){
 		return body;
 	}
 }
