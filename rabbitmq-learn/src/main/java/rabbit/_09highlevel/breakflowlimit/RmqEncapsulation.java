@@ -1,14 +1,14 @@
-package rabbit._09highlevel;
+package rabbit._09highlevel.breakflowlimit;
 
 import com.rabbitmq.client.*;
-import com.rabbitmq.client.impl.AMQBasicProperties;
-import lombok.ToString;
 import org.junit.Test;
 
 import java.io.*;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class RmqEncapsulation {
@@ -22,14 +22,14 @@ public class RmqEncapsulation {
     private static Connection connection;
     // 分片数，表示一个逻辑队列背后的实际队列数量
     private int subdivsionNum;
-    private ConcurrentLinkedQueue<Message> blockingQueue;
+    private ConcurrentLinkedDeque<Message> blockingQueue;
 
     public RmqEncapsulation(int subdivsionNum) {
         this.subdivsionNum = subdivsionNum;
-        blockingQueue = new ConcurrentLinkedQueue<>();
+        blockingQueue = new ConcurrentLinkedDeque<>();
     }
 
-    public static void newConnetion() throws IOException, TimeoutException {
+    public static void newConnection() throws IOException, TimeoutException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost(host);
         connectionFactory.setVirtualHost(vhost);
@@ -41,7 +41,7 @@ public class RmqEncapsulation {
     }
     public static Connection getConnection() throws IOException, TimeoutException {
         if (connection == null) {
-            newConnetion();
+            newConnection();
         }
         return connection;
     }
@@ -52,8 +52,8 @@ public class RmqEncapsulation {
         }
     }
 
-    public void exchangeDeclare(Channel channel, String exchang, String type, boolean durable, boolean autoDelete, Map<String, Object> arguments) throws IOException {
-        channel.exchangeDeclare(exchang, type, durable, autoDelete, arguments);
+    public void exchangeDeclare(Channel channel, String exchange, String type, boolean durable, boolean autoDelete, Map<String, Object> arguments) throws IOException {
+        channel.exchangeDeclare(exchange, type, durable, autoDelete, arguments);
     }
 
     public void queueDeclare(Channel channel, String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments) throws IOException {
@@ -157,5 +157,79 @@ public class RmqEncapsulation {
         return getResponse;
     }
 
+    private void startConsume(Channel channel,String queue,boolean autoAck,
+                              String consumerTag, ConcurrentLinkedDeque<Message> newBlockingDeque) throws IOException {
+        for (int i = 0; i < subdivsionNum; i++) {
+            String queueName = queue + "_" + i;
+            channel.basicConsume(queueName, autoAck, consumerTag + i, new NewConsumer(channel, newBlockingDeque));
+        }
+    }
+
+    public void basicConsume(Channel channel,String queue,boolean autoAck,
+                             String consumerTag, ConcurrentLinkedDeque<Message> newBlockingDeque,IMsgCallback iMsgCallback) throws IOException {
+        startConsume(channel, queue, autoAck, consumerTag, newBlockingDeque);
+        while (true) {
+            Message message = newBlockingDeque.peekFirst();
+            if (message != null) {
+                ConsumeStatus consumeStatus = iMsgCallback.consumeMsg(message);
+                newBlockingDeque.removeFirst();
+                if (consumeStatus == ConsumeStatus.SUCCESS) {
+                    channel.basicAck(message.getDeliveryTag(), false);
+                } else {
+                    channel.basicReject(message.getDeliveryTag(), false);
+                }
+            } else {
+                try {
+                    TimeUnit.MICROSECONDS.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    public static class NewConsumer extends DefaultConsumer{
+
+        private ConcurrentLinkedDeque<Message> newBlockingDeque;
+
+        public NewConsumer(Channel channel,ConcurrentLinkedDeque<Message> newBlockingDeque) {
+            super(channel);
+            this.newBlockingDeque = newBlockingDeque;
+        }
+
+        @Override
+        public void handleDelivery(String consumerTag, Envelope envelope,
+                                   AMQP.BasicProperties properties, byte[] body) throws IOException {
+            try {
+                Message message = (Message) getObjectFromBytes(body);
+                message.setDeliveryTag(envelope.getDeliveryTag());
+                newBlockingDeque.addLast(message);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    public void consumer_pull() throws IOException {
+        RmqEncapsulation rmqEncapsulation = new RmqEncapsulation(4);
+
+        Channel channel = connection.createChannel();
+        channel.basicQos(64);
+        rmqEncapsulation.basicConsume(channel, "queue", false, "consume_zzh",
+                rmqEncapsulation.blockingQueue, new IMsgCallback() {
+                    @Override
+                    public ConsumeStatus consumeMsg(Message message) {
+                        ConsumeStatus consumeStatus = ConsumeStatus.FAIL;
+                        if (message != null) {
+                            System.out.println(message);
+                            consumeStatus = ConsumeStatus.SUCCESS;
+                        }
+                        return consumeStatus;
+                    }
+                });
+
+    }
 
 }

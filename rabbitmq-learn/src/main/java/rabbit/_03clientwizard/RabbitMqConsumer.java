@@ -16,6 +16,7 @@ public class RabbitMqConsumer extends BaseRabbit {
     @Test
     public void consume_basicPush() throws IOException, InterruptedException {
         boolean autoAck = false;
+        // basicQos方法允许限制【信道】上的消费者所能保持的最大未确认消息的数量
         defaultChannel.basicQos(64);
         defaultChannel.basicConsume("message_durable_queue", autoAck, "myConsumerTag"
                 , new DefaultConsumer(defaultChannel){
@@ -125,7 +126,7 @@ public class RabbitMqConsumer extends BaseRabbit {
 
     /**  拉模式 */
     @Test
-    public void consume_batchgGet() throws IOException {
+    public void consume_batchGet() throws IOException {
 
         String exchange = "exchange_batchGetMode_demo";
         defaultChannel.exchangeDeclare(exchange, BuiltinExchangeType.FANOUT, false, true, null);

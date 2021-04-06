@@ -52,6 +52,10 @@ public class RabbitMqTTL extends BaseRabbit {
         Thread.sleep(6000);
     }
 
+    /** 设置队列的ttl：可控制队列被自动删除前处于未使用状态的时间。
+     *          未使用的意思是队列上没任何的消费者，
+     *          队列也没被重新声明，
+     *          且在过期时间段内也未调用过Basic.Get命令。 */
     @Test
     public void publish_queueDeclareTtl() throws IOException, InterruptedException {
         Map<String, Object> args = new HashMap<String, Object>();

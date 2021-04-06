@@ -1,4 +1,4 @@
-package rabbit._09highlevel;
+package rabbit._09highlevel.breakflowlimit;
 
 import lombok.Getter;
 import lombok.Setter;

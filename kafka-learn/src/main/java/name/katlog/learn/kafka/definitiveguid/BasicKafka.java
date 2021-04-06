@@ -1,4 +1,4 @@
-package name.katlog.learn.kafka;
+package name.katlog.learn.kafka.definitiveguid;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 

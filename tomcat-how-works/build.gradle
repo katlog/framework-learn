@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id 'name.fw.java.java-conventions'
+    id 'name.katlog.java.java-conventions'
 }
 
 dependencies {

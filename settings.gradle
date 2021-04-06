@@ -4,7 +4,7 @@
 
 rootProject.name = 'framework-learn'
 include(':rabbitmq-learn')
-include(':kafka-definitive-guide')
+include(':kafka-learn')
 include(':netty-advanced')
 include(':chapter2')
 include(':refelctions-analyze')

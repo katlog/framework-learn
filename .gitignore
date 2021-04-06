@@ -9,6 +9,8 @@
 .idea/**/dictionaries
 .idea/**/shelf
 config/*
+.gradle
+buildSrc
 
 *.iml
 

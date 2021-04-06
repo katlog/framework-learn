@@ -1,4 +1,4 @@
-package name.katlog.learn.kafka;
+package name.katlog.learn.kafka.definitiveguid;
 
 /**
  * Created by fw on 2020/4/20

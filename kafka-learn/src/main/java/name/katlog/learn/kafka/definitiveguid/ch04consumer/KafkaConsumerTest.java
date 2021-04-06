@@ -1,13 +1,10 @@
-package name.katlog.learn.kafka.ch04consumer;
+package name.katlog.learn.kafka.definitiveguid.ch04consumer;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import name.katlog.learn.kafka.BasicKafka;
+import name.katlog.learn.kafka.definitiveguid.BasicKafka;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.errors.WakeupException;
 import org.junit.Test;
 
 import java.time.Duration;
