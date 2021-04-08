@@ -96,4 +96,21 @@ public class BaseRabbit {
     }
 
 
+    protected long print(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+        System.out.println("-------------------------------------------");
+        String routingKey = envelope.getRoutingKey();
+        System.out.println("routingKey = " + routingKey);
+
+        System.out.println("consumerTag = " + consumerTag);
+
+        String correlationId = properties.getCorrelationId();
+        System.out.println("correlationId = " + correlationId);
+
+        long deliveryTag = envelope.getDeliveryTag();
+        System.out.println("deliveryTag = " + deliveryTag);
+
+        System.out.println("body = " + new String(body));
+        System.out.println("-------------------------------------------");
+        return deliveryTag;
+    }
 }
