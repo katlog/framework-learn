@@ -1,4 +1,4 @@
-package name.dfw.learn.reflections;
+package name.katlog.learn.reflections;
 
 import org.reflections.Reflections;
 

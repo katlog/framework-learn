@@ -50,7 +50,7 @@ public class Attributes extends ClassLoader {
 
     public static void main(final String args[]) throws Exception {
         // loads the original class and adapts it
-        ClassReader cr = new ClassReader("CommentAttribute");
+        ClassReader cr = new ClassReader("attributes.src.CommentAttribute");
         ClassWriter cw = new ClassWriter(0);
         ClassVisitor cv = new AddCommentClassAdapter(cw);
         cr.accept(cv, new Attribute[] { new CommentAttribute("") }, 0);
