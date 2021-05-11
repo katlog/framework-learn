@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation 'org.apache.kafka:kafka-clients:2.3.0'
+    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
 }
 
 description = 'kafka-learn'
